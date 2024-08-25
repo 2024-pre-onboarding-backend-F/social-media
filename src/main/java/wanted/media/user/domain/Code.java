@@ -23,7 +23,7 @@ public class Code {
     @Column(nullable = false)
     private Long codeId;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
