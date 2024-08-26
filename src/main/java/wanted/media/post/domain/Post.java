@@ -4,13 +4,26 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import java.time.LocalDateTime;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import wanted.media.user.domain.User;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -41,7 +54,7 @@ public class Post {
     @ColumnDefault("0")
     private Long viewCount;
 
-    @ColumnDefault("0")
+    @ColumnDefault("0"
     private Long shareCount;
 
     @LastModifiedDate
@@ -49,10 +62,9 @@ public class Post {
 
     @CreatedDate
     private LocalDateTime createdAt;
-
+                   
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @NotNull
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public void incrementViewCount() {

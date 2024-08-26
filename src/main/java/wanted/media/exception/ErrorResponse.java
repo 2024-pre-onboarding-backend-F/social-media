@@ -1,11 +1,4 @@
 package wanted.media.exception;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-@Getter
-@RequiredArgsConstructor
-public class ErrorResponse {
-
-	private final int statusCode;
-	private final String message;
+public record ErrorResponse(int statusCode, String message) {
 }

@@ -268,3 +268,5 @@ gradle-app.setting
 
 src/main/resources/application-secret.yml
 src/main/resources/application-test.yml
+src/main/generated
+
