@@ -29,7 +29,7 @@ public class PostController {
                 .likeCount(post.getLikeCount())
                 .type(post.getType())
                 .title(post.getTitle())
-                .post(post.getPost())
+                .content(post.getContent())
                 .hashtags(post.getHashtags())
                 .viewCount(post.getViewCount())
                 .shareCount(post.getShareCount())

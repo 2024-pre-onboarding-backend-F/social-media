@@ -43,7 +43,7 @@ class PostServiceTest {
                 .id("qwer")
                 .type(Type.TWITTER)
                 .title("제목 입력")
-                .post("내용 입력")
+                .content("내용 입력")
                 .user(user)
                 .viewCount(100L)
                 .build();
@@ -55,7 +55,7 @@ class PostServiceTest {
 
         // then
         assertThat(getData.getTitle()).isEqualTo("제목 입력");
-        assertThat(getData.getPost()).isEqualTo("내용 입력");
+        assertThat(getData.getContent()).isEqualTo("내용 입력");
         assertThat(getData.getViewCount()).isEqualTo(101);
         assertThat(getData.getUser().getAccount()).isEqualTo("sun");
         assertThat(getData.getUser().getEmail()).isEqualTo("sun@gmail.com");

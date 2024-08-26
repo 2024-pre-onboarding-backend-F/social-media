@@ -11,7 +11,7 @@ public record PostDetailResponse(
         String postId,
         Type type,
         String title,
-        String post,
+        String content,
         String hashtags,
         Long likeCount,
         Long viewCount,

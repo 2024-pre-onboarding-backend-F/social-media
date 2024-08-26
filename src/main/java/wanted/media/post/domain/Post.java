@@ -32,7 +32,7 @@ public class Post {
     @Column(nullable = false)
     private String title;
 
-    private String post;
+    private String content;
     private String hashtags;
 
     @ColumnDefault("0")
