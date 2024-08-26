@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wanted.media.exception.BaseException;
 import wanted.media.exception.ErrorCode;
 import wanted.media.exception.CustomException;
-import wanted.media.exception.ErrorCode;
 import wanted.media.exception.ErrorResponse;
 import wanted.media.exception.NotFoundException;
 

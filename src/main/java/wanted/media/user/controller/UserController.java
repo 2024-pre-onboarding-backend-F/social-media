@@ -29,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    //회원가입
+    // 회원가입 API
     @PostMapping("/sign-up")
     public ResponseEntity<SignUpResponse> signUp(@Validated @RequestBody SignUpRequest request) {
         SignUpResponse response = userService.signUp(request);
