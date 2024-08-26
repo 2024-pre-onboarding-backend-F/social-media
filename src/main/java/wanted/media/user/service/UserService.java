@@ -91,4 +91,26 @@ public class UserService {
                 new UserInfoDto(user.getAccount(), user.getEmail(), user.getGrade()));
     }
 
+    // 인증코드 재발급
+    public ReissueCodeResponse reissueCode(ReissueCodeRequest reissueCodeRequest) {
+        // 1. account로 사용자 조회
+        User user = userRepository.findByAccount(reissueCodeRequest.account())
+                .orElseThrow(UserNotFoundException::new);
+        // 2. 비밀번호 검증
+        if (!passwordEncoder.matches(reissueCodeRequest.password(), user.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+        // 3. 새로운 인증코드 발급
+        String newAuthCode = generateCode.codeGenerate();
+        // 4. 코드 객체 생성
+        Code newCode = Code.builder()
+                .user(user)
+                .authCode(newAuthCode)
+                .createdTime(LocalDateTime.now())
+                .build();
+        // 5. 코드 db 저장
+        codeRepository.save(newCode);
+
+        return new ReissueCodeResponse("인증코드가 성공적으로 재발급되었습니다.", newAuthCode);
+    }
 }

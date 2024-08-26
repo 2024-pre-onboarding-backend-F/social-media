@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wanted.media.user.dto.SignUpRequest;
-import wanted.media.user.dto.SignUpResponse;
-import wanted.media.user.dto.VerifyRequest;
-import wanted.media.user.dto.VerifyResponse;
+import wanted.media.user.dto.*;
 import wanted.media.user.service.UserService;
 
 @RestController
@@ -38,4 +35,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // 인증코드 재발급 요청 API
+    @PostMapping("/reissue-code")
+    public ResponseEntity<ReissueCodeResponse> reissueCode(@RequestBody ReissueCodeRequest request) {
+        ReissueCodeResponse response = userService.reissueCode(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 }
