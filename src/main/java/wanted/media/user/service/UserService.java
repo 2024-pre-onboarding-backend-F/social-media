@@ -5,6 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import wanted.media.user.config.TokenProvider;
+import wanted.media.exception.InvalidPasswordException;
+import wanted.media.exception.UserNotFoundException;
+import wanted.media.exception.VerificationCodeExpiredException;
+import wanted.media.exception.VerificationCodeMismatchException;
 import wanted.media.user.domain.Code;
 import wanted.media.user.domain.Grade;
 import wanted.media.user.domain.Token;
@@ -16,6 +20,7 @@ import wanted.media.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -81,29 +86,31 @@ public class UserService {
     //가입승인
     public VerifyResponse approveSignUp(VerifyRequest verifyRequest) {
         // 1. account로 사용자 조회
-        User user = userRepository.findByAccount(verifyRequest.getAccount())
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        User user = userRepository.findByAccount(verifyRequest.account())
+                .orElseThrow(UserNotFoundException::new);
         // 2. 비밀번호 검증
-        if (!passwordEncoder.matches(verifyRequest.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        if (!passwordEncoder.matches(verifyRequest.password(), user.getPassword())) {
+            throw new InvalidPasswordException();
         }
         // 3. 사용자 인증코드 검증
-        Code code = codeRepository.findByUserAndAuthCode(user, verifyRequest.getInputCode())
-                .orElseThrow(() -> new RuntimeException("인증코드가 일치하지 않습니다."));
-        // 4. 인증코드 유효성 검증 (유효시간 15분)
-        if (code.getCreatedTime().plusMinutes(15).isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("만료된 인증코드입니다.");
+        Code code = codeRepository.findByUserAndAuthCode(user, verifyRequest.inputCode())
+                .orElseThrow(VerificationCodeMismatchException::new);
+        // 4. 해당 사용자의 모든 인증코드 조회 (최신순 정렬)
+        List<Code> userCodes = codeRepository.findAllByUserOrderByCreatedTimeDesc(user);
+        // 5. 해당 사용자에게 발급된 모든 인증코드와 입력된 인증코드 일치 조회
+        if (!userCodes.isEmpty() && !userCodes.get(0).equals(code)) {
+            throw new VerificationCodeMismatchException();
         }
-        // 5. 인증 완료 -> 회원 등급 변경 (normal -> premium)
+        // 6. 인증코드 유효성 검증 (유효시간 15분)
+        if (code.getCreatedTime().plusMinutes(15).isBefore(LocalDateTime.now())) {
+            throw new VerificationCodeExpiredException();
+        }
+        // 7. 인증 완료 -> 회원 등급 변경 (normal -> premium)
         userRepository.updateUserGrade(user.getAccount(), Grade.PREMIUM_USER);
-        // 6. 인증 완료 회원 인증코드 삭제
+        // 8. 인증 완료 회원 인증코드 삭제
         codeRepository.deleteByUser(user);
-        // 7. 변경된 사용자정보 다시 조회
-        User updateUserInfo = userRepository.findByAccount(user.getAccount())
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-
         return new VerifyResponse("인증이 성공적으로 완료되었습니다!",
-                new UserInfoDto(updateUserInfo.getAccount(), updateUserInfo.getEmail(), updateUserInfo.getGrade()));
+                new UserInfoDto(user.getAccount(), user.getEmail(), user.getGrade()));
     }
 
 }
