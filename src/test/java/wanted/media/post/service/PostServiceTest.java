@@ -7,7 +7,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.media.post.domain.Post;
 import wanted.media.post.domain.Type;
-import wanted.media.post.dto.DetailResponse;
 import wanted.media.post.repository.PostRepository;
 import wanted.media.user.domain.Grade;
 import wanted.media.user.domain.User;
@@ -18,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 class PostServiceTest {
-
     @Autowired
     private PostService postService;
 
@@ -27,7 +25,6 @@ class PostServiceTest {
 
     @Autowired
     private PostRepository postRepository;
-
 
     @Test
     @Transactional
@@ -54,14 +51,13 @@ class PostServiceTest {
         postRepository.save(post);
 
         // when
-        DetailResponse getData = postService.getPost(post.getId());
+        Post getData = postService.getPost(post.getId());
+
         // then
         assertThat(getData.getTitle()).isEqualTo("제목 입력");
         assertThat(getData.getPost()).isEqualTo("내용 입력");
         assertThat(getData.getViewCount()).isEqualTo(101);
-        assertThat(getData.getAccount()).isEqualTo("sun");
-        assertThat(getData.getEmail()).isEqualTo("sun@gmail.com");
-
+        assertThat(getData.getUser().getAccount()).isEqualTo("sun");
+        assertThat(getData.getUser().getEmail()).isEqualTo("sun@gmail.com");
     }
-
 }

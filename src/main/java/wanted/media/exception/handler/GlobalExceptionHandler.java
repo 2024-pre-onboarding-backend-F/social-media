@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import wanted.media.exception.ErrorCode;
 import wanted.media.exception.ErrorResponse;
-import wanted.media.exception.PostNotFoundException;
+import wanted.media.exception.NotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,8 +18,8 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(400, e.getMessage()));
     }
 
-    @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlePostNotFound(PostNotFoundException e) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlePostNotFound(NotFoundException e) {
         ErrorCode errorCode = e.getErrorCode();
         ErrorResponse errorResponse = new ErrorResponse(
                 errorCode.getStatus().value(),

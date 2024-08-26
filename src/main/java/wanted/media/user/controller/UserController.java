@@ -9,6 +9,5 @@ import wanted.media.user.service.UserService;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
 }
