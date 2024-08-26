@@ -1,9 +1,10 @@
-package wanted.media.content.domain;
+package wanted.media.post.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,19 +14,15 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "contents")
+@Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Content {
+public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "content_id", nullable = false)
-    private Long id;
-
-    @Column(name = "like_count")
-    private Long likeCount;
+    @Column(name = "post_id", nullable = false)
+    private String id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,12 +32,16 @@ public class Content {
     @Column(nullable = false)
     private String title;
 
-    private String content;
-
+    private String post;
     private String hashtags;
 
+    @ColumnDefault("0")
+    private Long likeCount;
+
+    @ColumnDefault("0")
     private Long viewCount;
 
+    @ColumnDefault("0")
     private Long shareCount;
 
     @LastModifiedDate
@@ -54,4 +55,11 @@ public class Content {
     @NotNull
     private User user;
 
+    public void incrementViewCount() {
+        if (this.viewCount == null) {
+            this.viewCount = 0L;
+        }
+        this.viewCount += 1;
+    }
+    
 }

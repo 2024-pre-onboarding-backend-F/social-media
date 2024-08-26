@@ -1,4 +1,4 @@
-package wanted.media.content.domain;
+package wanted.media.post.domain;
 
 public enum Type {
     FACEBOOK, TWITTER, INSTAGRAM, THREADS;
